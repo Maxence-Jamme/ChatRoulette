@@ -256,17 +256,5 @@ async def test(ctx):
     print(ctx.author)
     await ctx.send(f"test")
 
-@bot.command(name="D20")
-async def d20(ctx):
-    result = random.randint(1, 20)  # Tirer un nombre aléatoire entre 1 et 20
-    await ctx.send(f"Tu as tiré : {result}")
-
-# Commande !actionmonstre
-@bot.command(name="actionmonstre")
-async def action_monstre(ctx):
-    actions = ["Attaque direct", "Pouvoir", "Avancé", "Reculer"]  # Liste des actions
-    decision = random.choice(actions)  # Choisir une action aléatoire
-    await ctx.send(f"Le monstre a choisi de : {decision}")
-
 # Lancer le bot
 bot.run(TOKEN)  
