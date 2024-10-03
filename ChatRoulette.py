@@ -9,13 +9,13 @@ import tk
 carList = ['<@333966716520628226> Maxence', '<@1046487582109876264> Jean', '<@309034764965380106> Etienne', 
         '<@367319844581801994> Gabriel', '<@449122128248438784> Nicolas', '<@577465394449874976> Damien']
 dico = {
-    'm': '<@333966716520628226> Maxence',
-    'j': '<@1046487582109876264> Jean',
-    'e': '<@309034764965380106> Etienne',
-    'g': '<@367319844581801994> Gabriel',
-    'n': '<@449122128248438784> Nicolas',
-    'd': '<@577465394449874976> Damien'
-}
+        'm': '<@333966716520628226> Maxence',
+        'j': '<@1046487582109876264> Jean',
+        'e': '<@309034764965380106> Etienne',
+        'g': '<@367319844581801994> Gabriel',
+        'n': '<@449122128248438784> Nicolas',
+        'd': '<@577465394449874976> Damien'
+    }
 allList = ['<@398621496358207490>', '<@309034764965380106>', '<@1046487582109876264>', '<@333966716520628226>',
           '<@755788837850185820>', '<@367319844581801994>', '<@196708995589865473>', '<@459750215931658250>',
           '<@550373848424382479>', '<@449122128248438784>', '<@577465394449874976>']
@@ -37,27 +37,10 @@ async def on_ready():
     #reset_cooldowns.start()  # Démarrer la tâche planifiée
 
 
-async def manage_car_args(arg):
-    # Vérifier si l'argument commence par un tiret et récupérer les lettres
-    if arg.startswith('-'):
-        lettres = arg[1:]  # Retirer le tiret
-    else:
-        return carList  # Si ce n'est pas un argument valide, retourner la liste d'origine
+async def remove_driver(arg):
+    lettres = arg[1:]  # Retirer le tiret
+    liste_modifiee = carList
 
-    # Dictionnaire pour correspondance
-    dico = {
-        'm': '<@333966716520628226> Maxence',
-        'j': '<@1046487582109876264> Jean',
-        'e': '<@309034764965380106> Etienne',
-        'g': '<@367319844581801994> Gabriel',
-        'n': '<@449122128248438784> Nicolas',
-        'd': '<@577465394449874976> Damien'
-    }
-
-    # Créer un duplicata de carList
-    liste_modifiee = carList.copy()
-
-    # Retirer les éléments correspondants
     for lettre in lettres:
         if lettre in dico:
             element_a_retirer = dico[lettre]
@@ -66,23 +49,56 @@ async def manage_car_args(arg):
 
     return liste_modifiee
 
+async def choose_driver(arg):
+    # Liste modifiable de tous les pilotes possibles
+    liste_modifiee = list(dico.values())
+    
+    # Liste des pilotes choisis
+    pilotes_choisis = []
+
+    if arg:
+        # Argument fourni : retirer les pilotes correspondants
+        lettres = arg[1:]  # Retirer le tiret
+        for lettre in lettres:
+            if lettre in dico:
+                pilote = dico[lettre]
+                if pilote in liste_modifiee:
+                    pilotes_choisis.append(pilote)
+                    liste_modifiee.remove(pilote)
+
+    # S'il manque un ou deux pilotes, les choisir aléatoirement
+    while len(pilotes_choisis) < 2:
+        pilote_aleatoire = random.choice(liste_modifiee)
+        pilotes_choisis.append(pilote_aleatoire)
+        liste_modifiee.remove(pilote_aleatoire)
+    
+    return pilotes_choisis
+
 # Commande !car avec gestion des arguments
 @bot.command(name="car")
 async def car(ctx, arg=None):
-    # Si l'argument est "-lundi", appelle une autre fonction
-    print(arg)
-    
-    if arg:
-        Lst = await manage_car_args(arg)
-        print('------',Lst)
-        await car_message(ctx, Lst)
-    else:
-        await car_message(ctx, carList)
+    user = ctx.author
+    if arg == None:
+        arg = ' '
+    await car_message(ctx, user, arg)
 
-async def car_message(ctx, List):
-    print("Commande !car reçue")
-    deux_noms = random.sample(List, 2)
-    await ctx.send(f"Les deux pilotes du jour sont : {deux_noms[0]} et {deux_noms[1]}")
+async def car_message(ctx, user, arg):
+    print("Commande !car reçue",user)
+
+    if arg[0]=="-":
+        print('1')
+        Liste_driver = await remove_driver(arg)
+    elif arg[0]=="+":
+        print('2')
+        Liste_driver = await choose_driver(arg)
+    elif user in ['albus3440','jean_gmrch']:
+        print('3')
+        Liste_driver = carList + ['<@309034764965380106> Etienne', '<@449122128248438784> Nicolas']*4
+    else :
+        print('4')
+        Liste_driver = carList
+    tirage_aleatoire = random.sample(Liste_driver, 2)
+    await ctx.send(f"Les deux pilotes du jour sont : {tirage_aleatoire[0]} et {tirage_aleatoire[1]}")
 
 
 
