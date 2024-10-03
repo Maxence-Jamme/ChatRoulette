@@ -36,6 +36,14 @@ async def on_ready():
     print(f'Bot connecté en tant que {bot.user}')
     #reset_cooldowns.start()  # Démarrer la tâche planifiée
 
+@bot.event
+async def send_message_to_channel(channel_id, message):
+    channel = bot.get_channel(channel_id)
+    print("okokokok")
+    if channel:
+        await channel.send(message)
+    else:
+        print(f"Channel with ID {channel_id} not found")
 
 async def remove_driver(arg):
     lettres = arg[1:]  # Retirer le tiret
@@ -77,7 +85,7 @@ async def choose_driver(arg):
 # Commande !car avec gestion des arguments
 @bot.command(name="car")
 async def car(ctx, arg=None):
-    user = ctx.author
+    user = ctx.author 
     if arg == None:
         arg = ' '
     await car_message(ctx, user, arg)
@@ -253,12 +261,79 @@ async def ping(ctx):
     print(ctx)
     await ctx.send(f"pong")
 
-# Commande !test
-@bot.command()
-async def test(ctx):
+# Commande !test avec deux arguments (arg2 peut contenir des espaces)
+@bot.command(name="test", hidden=True)
+async def test(ctx, arg1: int = None, *, arg2=None):
     print("Commande !test reçue")
-    print(ctx.author)
-    await ctx.send(f"test1")
+    user = ctx.author
+    
+    if user.display_name == "Albus":
+        print(f"Argument 1 : {type(arg1)}")
+        print(f"Argument 2 : {arg2}")  # arg2 peut contenir des espaces
+        await send_message_to_channel(arg1, arg2)
+
+
+# Commande !test2 pour envoyer un DM à un utilisateur spécifique
+@bot.command(name="test2", hidden=True)
+async def test2(ctx, user_id: int = None, *, message=None):
+    print("Commande !test2 reçue")
+    
+    # Vérifie si l'ID utilisateur et le message sont fournis
+    if user_id is None or message is None:
+        await ctx.send("Merci de fournir un ID utilisateur et un message.")
+        return
+    
+    try:
+        # Récupère l'utilisateur à partir de l'ID
+        user = await bot.fetch_user(user_id)
+        
+        if user:
+            # Envoie un DM à l'utilisateur
+            await user.send(message)
+            await ctx.send(f"Message envoyé à {user.display_name} avec succès !")
+        else:
+            await ctx.send(f"Utilisateur avec l'ID {user_id} non trouvé.")
+    except Exception as e:
+        print(f"Erreur : {e}")
+        await ctx.send(f"Impossible d'envoyer le message : {str(e)}")
+
+# Commande !test3 pour répondre à un message spécifique dans un canal
+@bot.command(name="test3", hidden=True)
+async def test3(ctx, channel_id: int, message_id: int, *, msg=None):
+    print("Commande !test3 reçue")
+    
+    # Vérifie si le message est fourni
+    if msg is None:
+        await ctx.send("Merci de fournir un message à envoyer.")
+        return
+
+    # Récupère le canal à partir de l'ID
+    channel = bot.get_channel(channel_id)
+    
+    if channel is None:
+        await ctx.send(f"Canal avec l'ID {channel_id} non trouvé.")
+        return
+
+    try:
+        # Récupère le message à partir de l'ID
+        message = await channel.fetch_message(message_id)
+
+        if message:
+            # Répondre au message
+            await message.reply(msg)
+            await ctx.send("Message répondu avec succès !")
+        else:
+            await ctx.send(f"Message avec l'ID {message_id} non trouvé dans le canal.")
+    except Exception as e:
+        print(f"Erreur : {e}")
+        await ctx.send(f"Impossible de répondre au message : {str(e)}")
+
+
+
+
+
+
+
 
 # Lancer le bot
 bot.run(TOKEN)  
