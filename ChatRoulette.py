@@ -262,7 +262,7 @@ async def ping(ctx):
     await ctx.send(f"pong")
 
 # Commande !test avec deux arguments (arg2 peut contenir des espaces)
-@bot.command(name="test", hidden=True)
+@bot.command(name="test1", hidden=True)
 async def test(ctx, arg1: int = None, *, arg2=None):
     print("Commande !test reçue")
     user = ctx.author
