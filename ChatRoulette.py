@@ -261,6 +261,13 @@ async def ping(ctx):
     print(ctx)
     await ctx.send(f"pong")
 
+# Commande !test
+@bot.command()
+async def test(ctx):
+    print("Commande !test reçue")
+    print(ctx)
+    await ctx.send(f"test")
+
 # Commande !test avec deux arguments (arg2 peut contenir des espaces)
 @bot.command(name="test1", hidden=True)
 async def test(ctx, arg1: int = None, *, arg2=None):
@@ -282,7 +289,7 @@ async def test2(ctx, user_id: int = None, *, message=None):
     if user_id is None or message is None:
         await ctx.send("Merci de fournir un ID utilisateur et un message.")
         return
-    
+
     try:
         # Récupère l'utilisateur à partir de l'ID
         user = await bot.fetch_user(user_id)
@@ -309,7 +316,7 @@ async def test3(ctx, channel_id: int, message_id: int, *, msg=None):
 
     # Récupère le canal à partir de l'ID
     channel = bot.get_channel(channel_id)
-    
+
     if channel is None:
         await ctx.send(f"Canal avec l'ID {channel_id} non trouvé.")
         return
