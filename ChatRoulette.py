@@ -258,7 +258,7 @@ async def ping(ctx):
 async def test(ctx):
     print("Commande !test reçue")
     print(ctx.author)
-    await ctx.send(f"test")
+    await ctx.send(f"test1")
 
 # Lancer le bot
 bot.run(TOKEN)  
