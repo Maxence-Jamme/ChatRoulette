@@ -80,10 +80,11 @@ async def car(ctx, arg=None):
     user = ctx.author
     if arg == None:
         arg = ' '
-    await car_message(ctx, user, arg)
+    for i in range(10):
+        await car_message(ctx, user, arg)
 
 async def car_message(ctx, user, arg):
-    print("Commande !car reçue",user)
+    print("Commande !car reçue",type(user),user.display_name)
 
     if arg[0]=="-":
         print('1')
@@ -91,13 +92,17 @@ async def car_message(ctx, user, arg):
     elif arg[0]=="+":
         print('2')
         Liste_driver = await choose_driver(arg)
-    elif user in ['albus3440','jean_gmrch']:
+    elif user.display_name in ['Albus', 'jean_gmrch']:
         print('3')
-        Liste_driver = carList + ['<@309034764965380106> Etienne', '<@449122128248438784> Nicolas']*4
+        Liste_driver = carList + ['<@309034764965380106> Etienne', '<@449122128248438784> Nicolas']*3
     else :
         print('4')
         Liste_driver = carList
-    tirage_aleatoire = random.sample(Liste_driver, 2)
+    print(Liste_driver)
+    while True:
+        tirage_aleatoire = random.sample(Liste_driver, 2)
+        if tirage_aleatoire[0] != tirage_aleatoire[1]:
+            break
     await ctx.send(f"Les deux pilotes du jour sont : {tirage_aleatoire[0]} et {tirage_aleatoire[1]}")
 
 
