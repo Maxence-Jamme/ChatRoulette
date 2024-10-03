@@ -80,8 +80,7 @@ async def car(ctx, arg=None):
     user = ctx.author
     if arg == None:
         arg = ' '
-    for i in range(10):
-        await car_message(ctx, user, arg)
+    await car_message(ctx, user, arg)
 
 async def car_message(ctx, user, arg):
     print("Commande !car reçue",type(user),user.display_name)
