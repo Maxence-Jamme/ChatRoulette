@@ -338,22 +338,22 @@ async def test3(ctx, channel_id: int, message_id: int, *, msg=None):
         await ctx.send(f"Impossible de répondre au message : {str(e)}")
 
 
-# Commande !reboot pour redémarrer le bot (seulement par l'utilisateur spécifié)
+# Commande !reboot pour redémarrer le serveur (seulement par l'utilisateur spécifié)
 @bot.command(name="reboot", hidden=True)
 async def reboot(ctx):
-    # ID de l'utilisateur autorisé à redémarrer le bot (le vôtre)
+    # ID de l'utilisateur autorisé à redémarrer le serveur (remplacez par votre ID Discord)
     authorized_user_id = 333966716520628226  # Remplacez par votre propre ID Discord
 
     # Vérifie si l'utilisateur qui a envoyé la commande est autorisé
     if ctx.author.id == authorized_user_id:
-        await ctx.send("Redémarrage en cours...")
-        print("Redémarrage initié par l'utilisateur autorisé.")
+        await ctx.send("Redémarrage du serveur en cours...")
+        print("Redémarrage du serveur initié par l'utilisateur autorisé.")
         
-        # Redémarre le script en utilisant execv pour redémarrer le programme
-        os.execv(sys.executable, ['python'] + sys.argv)
+        # Commande pour redémarrer le serveur
+        os.system("sudo reboot")
     else:
-        await ctx.send("Vous n'avez pas la permission de redémarrer le bot.")
-        print(f"L'utilisateur {ctx.author} a tenté de redémarrer le bot sans autorisation.")
+        await ctx.send("Vous n'avez pas la permission de redémarrer le serveur.")
+        print(f"L'utilisateur {ctx.author} a tenté de redémarrer le serveur sans autorisation.")
 
 
 
