@@ -49,7 +49,7 @@ async def on_message(message):
         print(f"Message privé reçu de {message.author}: {message.content}")
         await message.channel.send("Merci pour votre message !")
         message = f"{message.author}: {message.content}"
-        send_message_to_channel(1291744785190883339, message)
+        await send_message_to_channel(1291744785190883339, message)
     else:
         await bot.process_commands(message)
 
