@@ -39,6 +39,21 @@ async def on_ready():
     #reset_cooldowns.start()  # Démarrer la tâche planifiée
 
 @bot.event
+async def on_message(message):
+    # Ignore les messages envoyés par le bot lui-même
+    if message.author == bot.user:
+        return
+
+    # Vérifie si le message est un message privé (DM)
+    if isinstance(message.channel, discord.DMChannel):
+        print(f"Message privé reçu de {message.author}: {message.content}")
+        await message.channel.send("Merci pour votre message !")
+        message = f"{message.author}: {message.content}"
+        send_message_to_channel(1291744785190883339, message)
+    else:
+        await bot.process_commands(message)
+
+@bot.event
 async def send_message_to_channel(channel_id, message):
     channel = bot.get_channel(channel_id)
     print("okokokok")
