@@ -5,6 +5,8 @@ import asyncio
 from discord.ext import commands
 from datetime import datetime
 import tk
+import os
+import sys
 
 carList = ['<@333966716520628226> Maxence', '<@1046487582109876264> Jean', '<@309034764965380106> Etienne', 
         '<@367319844581801994> Gabriel', '<@449122128248438784> Nicolas', '<@577465394449874976> Damien']
@@ -336,7 +338,22 @@ async def test3(ctx, channel_id: int, message_id: int, *, msg=None):
         await ctx.send(f"Impossible de répondre au message : {str(e)}")
 
 
+# Commande !reboot pour redémarrer le bot (seulement par l'utilisateur spécifié)
+@bot.command(name="reboot", hidden=True)
+async def reboot(ctx):
+    # ID de l'utilisateur autorisé à redémarrer le bot (le vôtre)
+    authorized_user_id = 333966716520628226  # Remplacez par votre propre ID Discord
 
+    # Vérifie si l'utilisateur qui a envoyé la commande est autorisé
+    if ctx.author.id == authorized_user_id:
+        await ctx.send("Redémarrage en cours...")
+        print("Redémarrage initié par l'utilisateur autorisé.")
+        
+        # Redémarre le script en utilisant execv pour redémarrer le programme
+        os.execv(sys.executable, ['python'] + sys.argv)
+    else:
+        await ctx.send("Vous n'avez pas la permission de redémarrer le bot.")
+        print(f"L'utilisateur {ctx.author} a tenté de redémarrer le bot sans autorisation.")
 
 
 
