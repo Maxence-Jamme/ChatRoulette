@@ -47,7 +47,7 @@ async def on_message(message):
     # Vérifie si le message est un message privé (DM)
     if isinstance(message.channel, discord.DMChannel):
         print(f"Message privé reçu de {message.author}: {message.content}")
-        await message.channel.send("Merci pour votre message !")
+        #await message.channel.send("Merci pour votre message !")
         message = f"{message.author}: {message.content}"
         await send_message_to_channel(1291744785190883339, message)
     else:
