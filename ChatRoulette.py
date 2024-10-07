@@ -25,6 +25,8 @@ allList = ['<@398621496358207490>', '<@309034764965380106>', '<@1046487582109876
           '<@550373848424382479>', '<@449122128248438784>', '<@577465394449874976>']
 resto = ["Sandwich Intermarché", "Sandwich Boulangerie", "Sandwich Maison"]
 
+authorized_user_id = 333966716520628226  # Remplacez par votre propre ID Discord
+
 TOKEN = tk.get_tk()
 
 # Activer les intents requis
@@ -58,7 +60,6 @@ async def on_message(message):
 @bot.event
 async def send_message_to_channel(channel_id, message):
     channel = bot.get_channel(channel_id)
-    print("okokokok")
     if channel:
         await channel.send(message)
     else:
@@ -66,7 +67,8 @@ async def send_message_to_channel(channel_id, message):
 
 async def remove_driver(arg):
     lettres = arg[1:]  # Retirer le tiret
-    liste_modifiee = carList
+    liste_modifiee = carList.copy()
+
 
     for lettre in lettres:
         if lettre in dico:
@@ -111,6 +113,7 @@ async def car(ctx, arg=None):
 
 async def car_message(ctx, user, arg):
     print("Commande !car reçue",type(user),user.display_name)
+    Liste_driver = []
     print(type(arg))
     if arg[0]=="-":
         print('1')
@@ -127,13 +130,14 @@ async def car_message(ctx, user, arg):
     else :
         print('4')
         Liste_driver = carList
-    print(Liste_driver)
-    if(len(tirage_aleatoire) >= 2):
-        for i in range(50):
+    if(len(Liste_driver) >= 2):
+        while True:
             tirage_aleatoire = random.sample(Liste_driver, 2)
             if tirage_aleatoire[0] != tirage_aleatoire[1]:
                 break
         await ctx.send(f"Les deux pilotes du jour sont : {tirage_aleatoire[0]} et {tirage_aleatoire[1]}")
+    else:
+        await ctx.send(f"Erreur dans la commande")
 
 
 
@@ -296,6 +300,9 @@ async def test(ctx):
 async def test(ctx, arg1: int = None, *, arg2=None):
     print("Commande !test reçue")
     user = ctx.author
+    if ctx.author.id != authorized_user_id:
+        await ctx.send("Vous n'avez pas la permission d'éxecuter cette commande.")
+        return
     
     if user.display_name == "Albus":
         print(f"Argument 1 : {type(arg1)}")
@@ -307,6 +314,9 @@ async def test(ctx, arg1: int = None, *, arg2=None):
 @bot.command(name="test2", hidden=True)
 async def test2(ctx, user_id: int = None, *, message=None):
     print("Commande !test2 reçue")
+    if ctx.author.id != authorized_user_id:
+        await ctx.send("Vous n'avez pas la permission d'éxecuter cette commande.")
+        return
     
     # Vérifie si l'ID utilisateur et le message sont fournis
     if user_id is None or message is None:
@@ -331,6 +341,9 @@ async def test2(ctx, user_id: int = None, *, message=None):
 @bot.command(name="test3", hidden=True)
 async def test3(ctx, channel_id: int, message_id: int, *, msg=None):
     print("Commande !test3 reçue")
+    if ctx.author.id != authorized_user_id:
+        await ctx.send("Vous n'avez pas la permission d'éxecuter cette commande.")
+        return
     
     # Vérifie si le message est fourni
     if msg is None:
@@ -363,7 +376,7 @@ async def test3(ctx, channel_id: int, message_id: int, *, msg=None):
 @bot.command(name="reboot", hidden=True)
 async def reboot(ctx):
     # ID de l'utilisateur autorisé à redémarrer le serveur (remplacez par votre ID Discord)
-    authorized_user_id = 333966716520628226  # Remplacez par votre propre ID Discord
+    
 
     # Vérifie si l'utilisateur qui a envoyé la commande est autorisé
     if ctx.author.id == authorized_user_id:
@@ -377,8 +390,7 @@ async def reboot(ctx):
         print(f"L'utilisateur {ctx.author} a tenté de redémarrer le serveur sans autorisation.")
 
 
-
-
+    
 
 # Lancer le bot
 bot.run(TOKEN)  
