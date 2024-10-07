@@ -128,11 +128,12 @@ async def car_message(ctx, user, arg):
         print('4')
         Liste_driver = carList
     print(Liste_driver)
-    for i in range(50):
-        tirage_aleatoire = random.sample(Liste_driver, 2)
-        if tirage_aleatoire[0] != tirage_aleatoire[1]:
-            break
-    await ctx.send(f"Les deux pilotes du jour sont : {tirage_aleatoire[0]} et {tirage_aleatoire[1]}")
+    if(len(tirage_aleatoire) >= 2):
+        for i in range(50):
+            tirage_aleatoire = random.sample(Liste_driver, 2)
+            if tirage_aleatoire[0] != tirage_aleatoire[1]:
+                break
+        await ctx.send(f"Les deux pilotes du jour sont : {tirage_aleatoire[0]} et {tirage_aleatoire[1]}")
 
 
 
