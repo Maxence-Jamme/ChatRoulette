@@ -10,6 +10,8 @@ import sys
 
 carList = ['<@333966716520628226> Maxence', '<@1046487582109876264> Jean', '<@309034764965380106> Etienne', 
         '<@367319844581801994> Gabriel', '<@449122128248438784> Nicolas', '<@577465394449874976> Damien']
+carListSR = ['<@1046487582109876264> Jean', '<@309034764965380106> Etienne', '<@449122128248438784> Nicolas']
+carListDL = ['<@333966716520628226> Maxence', '<@367319844581801994> Gabriel', '<@577465394449874976> Damien']
 dico = {
         'm': '<@333966716520628226> Maxence',
         'j': '<@1046487582109876264> Jean',
@@ -109,13 +111,16 @@ async def car(ctx, arg=None):
 
 async def car_message(ctx, user, arg):
     print("Commande !car reçue",type(user),user.display_name)
-
+    print(type(arg))
     if arg[0]=="-":
         print('1')
         Liste_driver = await remove_driver(arg)
     elif arg[0]=="+":
         print('2')
         Liste_driver = await choose_driver(arg)
+    elif arg=="SRDL":
+        Liste_driver = random.sample(carListSR, 1)
+        Liste_driver.append(random.choice(carListDL))
     elif user.display_name in ['Albus', 'jean_gmrch']:
         print('3')
         Liste_driver = carList + ['<@309034764965380106> Etienne', '<@449122128248438784> Nicolas']*3
