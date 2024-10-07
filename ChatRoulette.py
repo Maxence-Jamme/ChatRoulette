@@ -120,7 +120,7 @@ async def car_message(ctx, user, arg):
         Liste_driver = await choose_driver(arg)
     elif arg=="SRDL":
         Liste_driver = random.sample(carListSR, 1)
-        Liste_driver.append(random.choice(carListDL))
+        Liste_driver.append(random.choice(carListDL))   
     elif user.display_name in ['Albus', 'jean_gmrch']:
         print('3')
         Liste_driver = carList + ['<@309034764965380106> Etienne', '<@449122128248438784> Nicolas']*3
@@ -128,7 +128,7 @@ async def car_message(ctx, user, arg):
         print('4')
         Liste_driver = carList
     print(Liste_driver)
-    while True:
+    for i in range(50):
         tirage_aleatoire = random.sample(Liste_driver, 2)
         if tirage_aleatoire[0] != tirage_aleatoire[1]:
             break
