@@ -6,7 +6,41 @@ from discord.ext import commands
 from datetime import datetime
 import tk
 import os
-import sys
+from PIL import Image
+from io import BytesIO
+
+def tirer_film_au_hasard(api_key):
+    url = "https://api.themoviedb.org/3/discover/movie"
+    params = {
+        "api_key": api_key,
+        "language": "fr-FR",
+        "sort_by": "popularity.desc",  # Trier par popularité
+        "page": random.randint(1, 10)  # Tirer une page au hasard entre 1 et 10
+    }
+    
+    response = requests.get(url, params=params)
+    
+    if response.status_code == 200:
+        data = response.json()
+        films = data["results"]
+        
+        if films:
+            film_choisi = random.choice(films)
+            titre = film_choisi["title"]
+            description = film_choisi["overview"]
+            image_path = film_choisi["poster_path"]
+            image_url = f"https://image.tmdb.org/t/p/w500{image_path}"  # URL complète de l'image
+            
+            
+            
+            return titre, description, image_url
+        else:
+            return "Aucun film trouvé", "", ""
+    else:
+        return "Erreur lors de la récupération des films", "", ""
+
+# Exemple d'utilisation
+
 
 carList = ['<@333966716520628226> Maxence', '<@1046487582109876264> Jean', '<@309034764965380106> Etienne', 
         '<@367319844581801994> Gabriel', '<@449122128248438784> Nicolas', '<@577465394449874976> Damien']
@@ -28,6 +62,7 @@ resto = ["Sandwich Intermarché", "Sandwich Boulangerie", "Sandwich Maison"]
 authorized_user_id = 333966716520628226  # Remplacez par votre propre ID Discord
 
 TOKEN = tk.get_tk()
+api_key = tk.get_tk_TMDB()
 
 # Activer les intents requis
 intents = discord.Intents.default()
@@ -388,6 +423,21 @@ async def reboot(ctx):
     else:
         await ctx.send("Vous n'avez pas la permission de redémarrer le serveur.")
         print(f"L'utilisateur {ctx.author} a tenté de redémarrer le serveur sans autorisation.")
+
+
+# Commande !film pour redémarrer le serveur (seulement par l'utilisateur spécifié)
+@bot.command(name="film")
+async def film(ctx):
+    film, description, url = tirer_film_au_hasard(api_key)
+    await ctx.send(film)
+    await ctx.send(description)
+    await ctx.send(url)
+
+
+
+
+
+
 
 
     
