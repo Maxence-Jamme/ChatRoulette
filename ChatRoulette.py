@@ -467,7 +467,7 @@ async def noel(ctx, *participants: discord.Member):
             await santa.send(f"Tu es le Secret Santa de **{recipient.display_name}** !")
             await santa.send(f"🤫 Garde cela secret et prépare un joli cadeau d'une valeur de 20 euros max pour cette personne!")
             await santa.send(f"Les cadeaux seront dévoilés jeudi soir !")
-            await send_message_to_channel(1291744785190883339, f"{santa.display_name} fait un cadeau à {recipient.display_name}")
+            await send_message_to_channel(1318238365849620510, f"{santa.display_name} fait un cadeau à {recipient.display_name}")
         except discord.Forbidden:
             await ctx.send(f"Je n'ai pas pu envoyer un message privé à {santa.mention}. 😢")
 
