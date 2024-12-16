@@ -159,11 +159,8 @@ async def car_message(ctx, user, arg):
     elif arg=="SRDL":
         Liste_driver = random.sample(carListSR, 1)
         Liste_driver.append(random.choice(carListDL))   
-    elif user.display_name in ['Albus', 'jean_gmrch']:
-        print('3')
-        Liste_driver = carList + ['<@309034764965380106> Etienne', '<@449122128248438784> Nicolas']*3
     else :
-        print('4')
+        print('3')
         Liste_driver = carList
     if(len(Liste_driver) >= 2):
         while True:
@@ -437,6 +434,43 @@ async def film(ctx):
 
 
 
+@bot.command(name="noel", help="Organise un Secret Santa 🎅")
+async def noel(ctx, *participants: discord.Member):
+    if ctx.author.id != authorized_user_id:
+        await ctx.send("Vous n'avez pas la permission d'éxecuter cette commande.")
+        try:
+            await ctx.author.send("Tu viens de tirer au sors Albus, bravo a toi tu peux lui faire un cadeau d'une valeur d 150euros.")
+        except discord.Forbidden:
+            await ctx.send(f"{ctx.author.mention}, je n'ai pas pu vous envoyer un message privé. Activez vos MP ou contactez Albus.")
+        return
+    
+    if len(participants) < 2:
+        await ctx.send("Il faut au moins 2 participants pour organiser un Secret Santa !")
+        return
+
+    # Création de la liste des participants
+    participants_list = list(participants)
+    random.shuffle(participants_list)
+
+    # Création des paires Secret Santa
+    assignments = {}
+    for i in range(len(participants_list)):
+        santa = participants_list[i]
+        recipient = participants_list[(i + 1) % len(participants_list)]  # La personne suivante
+        assignments[santa] = recipient
+
+    # Notification des participants
+    for santa, recipient in assignments.items():
+        try:
+            await santa.send(f"🎅 HoHoHo 🎅")
+            await santa.send(f"🎁 Bonjour {santa.display_name} 🎁")
+            await santa.send(f"Tu es le Secret Santa de **{recipient.display_name}** !")
+            await santa.send(f"🤫 Garde cela secret et prépare un joli cadeau d'une valeur de 20 euros max pour cette personne!")
+            await santa.send(f"Les cadeaux seront dévoilés jeudi soir !")
+        except discord.Forbidden:
+            await ctx.send(f"Je n'ai pas pu envoyer un message privé à {santa.mention}. 😢")
+
+    await ctx.send("🎅 Le Secret Santa a été organisé avec succès ! Vérifiez vos messages privés pour savoir à qui offrir un cadeau. 🎄")
 
 
 
