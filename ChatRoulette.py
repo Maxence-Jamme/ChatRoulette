@@ -78,58 +78,6 @@ intents.message_content = True  # Ajoute ceci pour que le bot puisse lire le con
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 
-# Commande !sudo
-@bot.command()
-async def sudo(ctx):
-    print("Commande !sudo reçue")
-    
-    if isinstance(ctx.channel, discord.DMChannel):
-        sender = ctx.author
-    else:
-        sender = ctx.channel
-
-    if ctx.message.attachments:
-        attachment = ctx.message.attachments[0]
-
-        # Télécharger l'image
-        image_bytes = await attachment.read()
-        pil_image = Image.open(io.BytesIO(image_bytes))
-
-        # Convertir PIL -> NumPy pour OpenCV
-        image_np = np.array(pil_image)
-
-        # Envoyer un message pour prévenir que le traitement commence
-        processing_message = await sender.send("🔍 Je cherche une solution au Sudoku...")
-
-        try:
-            # Timeout après 30 secondes
-            processed_image = await asyncio.wait_for(
-                asyncio.to_thread(sudoku.sudo, image_np), timeout=30
-            )
-
-            # Convertir NumPy -> PIL
-            processed_pil = Image.fromarray(processed_image)
-
-            # Sauvegarder l'image en mémoire
-            img_io = io.BytesIO()
-            processed_pil.save(img_io, format="PNG")
-            img_io.seek(0)
-
-            # Supprimer le message "🔍 Je cherche..."
-            await processing_message.delete()
-
-            # Envoyer l'image modifiée
-            await sender.send(file=discord.File(img_io, "modified.png"))
-
-        except asyncio.TimeoutError:
-            await processing_message.edit(content="⏳ L'algorithme a mis trop de temps à résoudre le Sudoku ! ❌")
-
-        except Exception as e:
-            await processing_message.edit(content=f"⚠️ Une erreur s'est produite : `{str(e)}`")
-
-    else:
-        await sender.send("❌ Envoie une image avec la commande !")
-        
 # Événement lors de la connexion du bot
 @bot.event
 async def on_ready(): 
@@ -146,8 +94,14 @@ async def on_message(message):
     if isinstance(message.channel, discord.DMChannel):
         print(f"Message privé reçu de {message.author}: {message.content}")
         #await message.channel.send("Merci pour votre message !")
-        message = f"{message.author}: {message.content}"
-        await send_message_to_channel(1291744785190883339, message)
+        if message.content == "!sudo" and message.attachments:
+            # Créez un contexte factice pour appeler la commande
+            ctx = await bot.get_context(message)
+            await sudo(ctx)
+        else:
+        
+            message = f"{message.author}: {message.content}"
+            await send_message_to_channel(1291744785190883339, message)
     else:
         await bot.process_commands(message)
 
@@ -534,6 +488,59 @@ async def noel(ctx, *participants: discord.Member):
 
 
 
+# Commande !sudo
+@bot.command()
+async def sudo(ctx):
+    print("Commande !sudo reçue")
+    
+    if isinstance(ctx.channel, discord.DMChannel):
+        sender = ctx.author
+    else:
+        sender = ctx.channel
+
+    if ctx.message.attachments:
+        attachment = ctx.message.attachments[0]
+
+        # Télécharger l'image
+        image_bytes = await attachment.read()
+        pil_image = Image.open(io.BytesIO(image_bytes))
+
+        # Convertir PIL -> NumPy pour OpenCV
+        image_np = np.array(pil_image)
+
+        # Envoyer un message pour prévenir que le traitement commence
+        processing_message = await sender.send("🔍 Je cherche une solution au Sudoku...")
+
+        try:
+            # Timeout après 30 secondes
+            processed_image = await asyncio.wait_for(
+                asyncio.to_thread(sudoku.sudo, image_np), timeout=30
+            )
+
+            # Convertir NumPy -> PIL
+            processed_pil = Image.fromarray(processed_image)
+
+            # Sauvegarder l'image en mémoire
+            img_io = io.BytesIO()
+            processed_pil.save(img_io, format="PNG")
+            img_io.seek(0)
+
+            # Supprimer le message "🔍 Je cherche..."
+            await processing_message.delete()
+
+            # Envoyer l'image modifiée
+            await sender.send(file=discord.File(img_io, "modified.png"))
+
+        except asyncio.TimeoutError:
+            print('ici')
+            await processing_message.edit(content="⏳ L'algorithme a mis trop de temps à résoudre le Sudoku ! ❌")
+
+        except Exception as e:
+            await processing_message.edit(content=f"⚠️ Une erreur s'est produite : `{str(e)}`")
+
+    else:
+        await sender.send("❌ Envoie une image avec la commande !")
+        
 
 # Lancer le bot
 bot.run(TOKEN)  
