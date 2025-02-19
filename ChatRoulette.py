@@ -14,6 +14,7 @@ import sudo as sudoku
 import cv2
 import numpy as np
 import easyocr
+import psutil
 
 def tirer_film_au_hasard(api_key):
     url = "https://api.themoviedb.org/3/discover/movie"
@@ -508,15 +509,20 @@ async def sudo(ctx):
         # Convertir PIL -> NumPy pour OpenCV
         image_np = np.array(pil_image)
 
+        # Vérifier les ressources avant de commencer le traitement
+        mem = psutil.virtual_memory()
+        if mem.available < 500 * 1024 * 1024:  # Par exemple, moins de 500 Mo disponibles
+            await sender.send("❌ Ressources insuffisantes pour traiter l'image. Veuillez libérer de la mémoire et réessayer.")
+            return
+
         # Envoyer un message pour prévenir que le traitement commence
         processing_message = await sender.send("🔍 Je cherche une solution au Sudoku...")
 
         try:
             # Timeout après 30 secondes
-            # processed_image = await asyncio.wait_for(
-            #     asyncio.to_thread(sudoku.sudo, image_np), timeout=30
-            # )
-            processed_image = sudoku.sudo(image_np)
+            processed_image = await asyncio.wait_for(
+                asyncio.to_thread(sudoku.sudo, image_np), timeout=30
+            )
 
             # Convertir NumPy -> PIL
             processed_pil = Image.fromarray(processed_image)
@@ -533,8 +539,10 @@ async def sudo(ctx):
             await sender.send(file=discord.File(img_io, "modified.png"))
 
         except asyncio.TimeoutError:
-            print('ici')
             await processing_message.edit(content="⏳ L'algorithme a mis trop de temps à résoudre le Sudoku ! ❌")
+
+        except MemoryError:
+            await processing_message.edit(content="❌ Mémoire insuffisante pour traiter l'image. Veuillez libérer de la mémoire et réessayer.")
 
         except Exception as e:
             await processing_message.edit(content=f"⚠️ Une erreur s'est produite : `{str(e)}`")
