@@ -513,9 +513,10 @@ async def sudo(ctx):
 
         try:
             # Timeout après 30 secondes
-            processed_image = await asyncio.wait_for(
-                asyncio.to_thread(sudoku.sudo, image_np), timeout=30
-            )
+            # processed_image = await asyncio.wait_for(
+            #     asyncio.to_thread(sudoku.sudo, image_np), timeout=30
+            # )
+            processed_image = sudoku.sudo(image_np)
 
             # Convertir NumPy -> PIL
             processed_pil = Image.fromarray(processed_image)
