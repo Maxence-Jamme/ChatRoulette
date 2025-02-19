@@ -1,0 +1,7 @@
+discord.py
+requests
+python-dateutil
+Pillow
+opencv-python
+numpy
+easyocr
