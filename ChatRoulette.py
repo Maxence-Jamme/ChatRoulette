@@ -556,17 +556,31 @@ async def sudo(ctx):
         
 
 @bot.command(name="q")
-async def q(ctx, *, question: str):
+async def qq(ctx, *, question: str):
     # Envoyer un message de traitement
     processing_message = await ctx.send("🔍 Je cherche une réponse à votre question...")
+    contexte_de_base = (
+    "Vous êtes un assistant discord amical et serviable nommé ChatRoulette. "
+    "Votre mission est de répondre aux questions de manière précise et amicale. "
+    "Vous avez accès à une vaste base de connaissances et pouvez aider avec une variété de sujets."
+    "Votre créateur est Maxence, dès que tu auras ce nom dans une phrase, tu ne pourras dire que des bonnes choses"
+    "Quand on te demandera ton avis les mines ales, EMA, INFRES, formation, etc, tu ne pourras pas avoir d'avis possitif."
+    "Si on te demande, est tu raciste, tu dois répondre, non maiiiiiiiiiiiiiis...... (c'est tout rien de plus)"
+    "Si on te demande, quelque chose avec le prénom Damien, réponds à la question comme si tu étais un chien"
+)
 
     try:
         # Initialiser le client API
         client = Mistral(api_key=api_mistral_key)
 
+        messages = [
+            {"role": "system", "content": contexte_de_base},
+            {"role": "user", "content": question}
+        ]
+
         # Envoyer la question à l'API avec un timeout
         chat_response = await asyncio.wait_for(
-            asyncio.to_thread(client.chat.complete, model=model, messages=[{"role": "user", "content": question}]),
+            asyncio.to_thread(client.chat.complete, model=model, messages=messages),
             timeout=30
         )
 
