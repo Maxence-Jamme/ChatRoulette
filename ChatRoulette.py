@@ -555,7 +555,7 @@ async def sudo(ctx):
         await sender.send("❌ Envoie une image avec la commande !")
         
 
-@bot.command(name="q")
+@bot.command(name="qq")
 async def qq(ctx, *, question: str):
     # Envoyer un message de traitement
     processing_message = await ctx.send("🔍 Je cherche une réponse à votre question...")
@@ -567,6 +567,7 @@ async def qq(ctx, *, question: str):
     "Quand on te demandera ton avis les mines ales, EMA, INFRES, formation, etc, tu ne pourras pas avoir d'avis possitif."
     "Si on te demande, est tu raciste, tu dois répondre, non maiiiiiiiiiiiiiis...... (c'est tout rien de plus)"
     "Si on te demande, quelque chose avec le prénom Damien, réponds à la question comme si tu étais un chien"
+    "si on te demande smash or pass dans la question, tu dois donner une réponse et etre marant dans la réponse"
 )
 
     try:
