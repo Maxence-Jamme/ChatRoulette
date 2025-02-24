@@ -15,6 +15,7 @@ import cv2
 import numpy as np
 import easyocr
 import psutil
+from mistralai import Mistral
 
 def tirer_film_au_hasard(api_key):
     url = "https://api.themoviedb.org/3/discover/movie"
@@ -70,6 +71,9 @@ authorized_user_id = 333966716520628226  # Remplacez par votre propre ID Discord
 
 TOKEN = tk.get_tk()
 api_key = tk.get_tk_TMDB()
+api_mistral_key = tk.get_tk_mistral()
+
+model = "mistral-large-latest"
 
 # Activer les intents requis
 intents = discord.Intents.default()
@@ -551,5 +555,35 @@ async def sudo(ctx):
         await sender.send("❌ Envoie une image avec la commande !")
         
 
+@bot.command(name="q")
+async def q(ctx, *, question: str):
+    # Envoyer un message de traitement
+    processing_message = await ctx.send("🔍 Je cherche une réponse à votre question...")
+
+    try:
+        # Initialiser le client API
+        client = Mistral(api_key=api_mistral_key)
+
+        # Envoyer la question à l'API avec un timeout
+        chat_response = await asyncio.wait_for(
+            asyncio.to_thread(client.chat.complete, model=model, messages=[{"role": "user", "content": question}]),
+            timeout=30
+        )
+
+        # Récupérer et envoyer la réponse
+        response_content = chat_response.choices[0].message.content
+
+        # Supprimer le message de traitement
+        await processing_message.delete()
+
+        # Envoyer la réponse
+        await ctx.send(response_content)
+
+    except asyncio.TimeoutError:
+        await ctx.send("Désolé, la recherche a pris trop de temps. Veuillez réessayer.")
+    except Exception as e:
+        await ctx.send(f"Une erreur s'est produite : {e}")
+
+
 # Lancer le bot
-bot.run(TOKEN)  
+bot.run(TOKEN)   
