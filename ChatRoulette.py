@@ -555,8 +555,8 @@ async def sudo(ctx):
         await sender.send("❌ Envoie une image avec la commande !")
         
 
-@bot.command(name="qq")
-async def qq(ctx, *, question: str):
+@bot.command(name="q")
+async def q(ctx, *, question: str):
     # Envoyer un message de traitement
     processing_message = await ctx.send("🔍 Je cherche une réponse à votre question...")
     contexte_de_base = (
