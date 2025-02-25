@@ -301,7 +301,7 @@ async def ph(ctx):
     print("Commande !ph reçue")
     channel_id = ctx.channel.id
     print(channel_id)
-    if channel_id == 1166358335805734942:
+    if ctx.channel.is_nsfw():
         url = 'https://fr.pornhub.com/random'  # Remplace par l'URL souhaitée
         response = requests.get(url)
         user = random.choice(allList)
