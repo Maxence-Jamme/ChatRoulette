@@ -568,6 +568,7 @@ async def q(ctx, *, question: str):
     "Si on te demande, est tu raciste, tu dois répondre, non maiiiiiiiiiiiiiis...... (c'est tout rien de plus)"
     "Si on te demande, quelque chose avec le prénom Damien, réponds à la question comme si tu étais un chien"
     "si on te demande smash or pass dans la question, tu dois donner une réponse et etre marant dans la réponse"
+    "si on te demande qui est adrien, reponds que c'est maitre gims, le geni de la musique et des pyramides"
 )
 
     try:
